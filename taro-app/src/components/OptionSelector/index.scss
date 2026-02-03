@@ -1,0 +1,67 @@
+// src/components/OptionSelector/index.scss - 选择题样式
+
+.option-selector {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32rpx;
+}
+
+.option-item {
+    width: 100%;
+    text-align: left;
+    padding: 40rpx;
+    border-radius: 16px;
+    border: 2px solid #e5e5e5;
+    background: #fff;
+    box-shadow: 0 8rpx 0 #e5e5e5;
+    transition: all 0.3s;
+
+    &.selected {
+        border-color: #1cb0f6;
+        background: #ddf4ff;
+        box-shadow: 0 8rpx 0 #1899d6;
+    }
+
+    &.disabled {
+        opacity: 0.5;
+    }
+
+    &:active:not(.disabled) {
+        transform: scale(0.98);
+    }
+}
+
+.option-content {
+    display: flex;
+    gap: 32rpx;
+    align-items: center;
+}
+
+.option-number {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 28rpx;
+    border: 2px solid #e5e5e5;
+    color: #afafaf;
+
+    &.active {
+        background: #1cb0f6;
+        border-color: #1899d6;
+        color: white;
+    }
+}
+
+.option-code {
+    font-size: 28rpx;
+    font-family: 'Fira Code', monospace;
+    color: #4b4b4b;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4rpx 16rpx;
+    border-radius: 8rpx;
+}

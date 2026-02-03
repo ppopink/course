@@ -1,0 +1,146 @@
+// src/app.scss - 全局样式
+// 原 React 代码：index.html <style> 标签 → 已适配 Taro（标签选择器已替换）
+
+page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #0f1016;
+  color: #f8fafc;
+  
+  // 原 React 代码：body 星空背景 → 已适配 Taro/小程序（page 标签）
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+  background-size: 200px 200px;
+  background-attachment: fixed;
+}
+
+.fredoka { 
+  font-family: 'Fredoka', sans-serif; 
+  font-weight: 700;
+}
+
+// 原 React 代码：.map-container (div) → 已适配 Taro（view）
+.map-container {
+  position: relative;
+  padding: 8rem 0;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  perspective: 800px; 
+}
+
+// 原 React 代码：.map-node 关卡节点样式 → 保持不变
+.map-node {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 50; 
+  transform-style: preserve-3d;
+}
+
+.node-group {
+  margin: 3.5rem 0;
+  position: relative;
+  transition: transform 0.3s ease;
+  display: flex;
+  justify-content: center;
+}
+
+// 原 React 代码：已完成节点样式 → 保持不变
+.node-completed {
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  box-shadow: 
+    0 6px 0 #b45309,
+    0 15px 30px rgba(251, 191, 36, 0.5),
+    inset 0 2px 5px rgba(255,255,255,0.6);
+  border: 3px solid #fffbeb;
+}
+
+// 原 React 代码：可用节点（魔法光效）→ 保持不变
+.node-unlocked {
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  box-shadow: 
+    0 0 30px rgba(168, 85, 247, 0.6),
+    inset 0 0 20px rgba(255,255,255,0.3);
+  border: 2px solid rgba(255,255,255,0.8);
+  animation: magic-pulse 2.5s infinite ease-in-out;
+}
+
+.node-unlocked::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 85, 247, 0.3);
+  animation: ripple 2s infinite cubic-bezier(0, 0, 0.2, 1);
+}
+
+// 原 React 代码：锁定节点 → 保持不变
+.node-locked {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  color: rgba(255,255,255,0.3);
+}
+
+.node-locked::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px dashed rgba(99, 102, 241, 0.3);
+  animation: rotate-slow 20s linear infinite;
+}
+
+@keyframes magic-pulse {
+  0%, 100% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); transform: scale(1); }
+  50% { box-shadow: 0 0 50px rgba(139, 92, 246, 0.8); transform: scale(1.08); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// 原 React 代码：.duo-btn 按钮样式 → 保持不变
+.duo-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px; 
+  font-weight: 700;
+  transition: all 0.2s ease;
+  border-bottom-width: 4px;
+}
+
+.duo-btn:active { 
+  transform: translateY(2px); 
+  border-bottom-width: 2px; 
+}
+
+.duo-btn-green { 
+  background: #58cc02; 
+  color: white; 
+  border-color: #46a302; 
+}
+
+// 隐藏滚动条
+::-webkit-scrollbar { 
+  display: none; 
+}

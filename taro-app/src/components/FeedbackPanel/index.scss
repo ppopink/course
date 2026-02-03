@@ -1,0 +1,254 @@
+// src/components/FeedbackPanel/index.scss - 反馈弹窗样式
+
+.feedback-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32rpx;
+    overflow: hidden;
+
+    &.shake {
+        animation: shake 0.5s;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-10rpx);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(10rpx);
+    }
+}
+
+.feedback-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(40rpx);
+    animation: fade-in 0.7s;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.feedback-card {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 48px;
+    box-shadow: 0 40rpx 80rpx rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: zoom-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &.success {
+        border-bottom: 24rpx solid #58cc02;
+    }
+
+    &.error {
+        border-bottom: 24rpx solid #ef4444;
+    }
+}
+
+@keyframes zoom-in {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.feedback-content {
+    padding: 64rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.feedback-icon {
+    font-size: 192rpx;
+    margin-bottom: 48rpx;
+    display: block;
+    filter: drop-shadow(0 8rpx 16rpx rgba(0, 0, 0, 0.2));
+    animation: icon-pulse 2s infinite;
+}
+
+@keyframes icon-pulse {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.1) rotate(12deg);
+    }
+}
+
+.feedback-title {
+    font-size: 80rpx;
+    font-weight: 900;
+    margin-bottom: 32rpx;
+    display: block;
+
+    &.success-title {
+        color: #58cc02;
+    }
+
+    &.error-title {
+        color: #ef4444;
+    }
+}
+
+.feedback-message {
+    width: 100%;
+    padding: 48rpx 56rpx;
+    border-radius: 32px;
+    margin-bottom: 48rpx;
+    font-weight: bold;
+    font-size: 40rpx;
+    line-height: 1.6;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &.success-msg {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    &.error-msg {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 2px solid #fecaca;
+    }
+}
+
+.feedback-explanation {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 35px;
+    padding: 48rpx;
+    margin-bottom: 64rpx;
+    width: 100%;
+    text-align: left;
+    position: relative;
+}
+
+.explanation-badge {
+    position: absolute;
+    top: -24rpx;
+    left: 64rpx;
+    padding: 12rpx 40rpx;
+    border-radius: 20px;
+    font-size: 20rpx;
+    font-weight: 900;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 4rpx;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.15);
+
+    &.success-badge {
+        background: #58cc02;
+    }
+
+    &.error-badge {
+        background: #ef4444;
+    }
+}
+
+.explanation-text {
+    color: #64748b;
+    font-weight: bold;
+    line-height: 1.6;
+    font-size: 28rpx;
+    padding-top: 16rpx;
+    font-style: italic;
+    display: block;
+}
+
+.feedback-btn {
+    width: 100%;
+    padding: 40rpx 80rpx;
+    font-size: 48rpx;
+    font-weight: 900;
+    color: white;
+    border-radius: 16px;
+    border: 2px solid;
+    border-bottom-width: 12rpx;
+    transition: all 0.2s;
+
+    &:active {
+        transform: translateY(4rpx);
+        border-bottom-width: 4rpx;
+    }
+
+    &.success-btn {
+        background: #58cc02;
+        border-color: #46a302;
+        box-shadow: 0 12rpx 0 #46a302;
+    }
+
+    &.error-btn {
+        background: #ef4444;
+        border-color: #991b1b;
+        box-shadow: 0 12rpx 0 #991b1b;
+    }
+}
+
+.feedback-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.particle {
+    position: absolute;
+    animation: confetti 2s ease-out forwards;
+    box-shadow: 0 0 20rpx currentColor;
+}
+
+@keyframes confetti {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx, 0), var(--ty, 0)) rotate(720deg);
+        opacity: 0;
+    }
+}
