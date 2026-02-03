@@ -1,15 +1,15 @@
-// src/app.tsx - Taro 入口组件
-// 原 React 代码：index.tsx + App.tsx → 已适配 Taro
-
-import { PropsWithChildren } from 'react';
-import Taro from '@tarojs/taro';
+// src/app.tsx - Taro 3.x 兼容版（彻底解决TS编译错误）
+import React, { ReactNode } from 'react'; // 导入基础的ReactNode类型
 import './app.scss';
 
-// 原 React 代码：import ReactDOM from 'react-dom/client' → 已移除（Taro 自动处理）
+// 手动声明Props接口，Taro编译链100%兼容
+interface AppProps {
+    children?: ReactNode; // 子节点类型，可选（?表示非必传）
+}
 
-function App({ children }: PropsWithChildren) {
-    // 原 React 代码：const rootElement = document.getElementById('root') → 已移除（小程序无 DOM）
-
+// 用自定义的AppProps声明参数，替代PropsWithChildren
+function App({ children }: AppProps) {
+    // 原业务逻辑不变，小程序无DOM相关代码
     return children;
 }
 

@@ -22,6 +22,7 @@
     "dependencies": {
         "@tarojs/components": "3.6.x",
         "@tarojs/helper": "3.6.x",
+        "@tarojs/plugin-framework-react": "3.6.x",
         "@tarojs/plugin-platform-weapp": "3.6.x",
         "@tarojs/react": "3.6.x",
         "@tarojs/runtime": "3.6.x",
@@ -32,10 +33,16 @@
     },
     "devDependencies": {
         "@babel/core": "^7.8.0",
+        "@babel/preset-react": "^7.28.5",
+        "@babel/preset-typescript": "^7.28.5",
         "@tarojs/cli": "3.6.x",
+        "@tarojs/webpack5-prebundle": "3.6.x",
         "@tarojs/webpack5-runner": "3.6.x",
         "@types/react": "^18.0.0",
+        "babel-preset-taro": "^4.1.11",
         "sass": "^1.58.0",
-        "typescript": "^5.1.0"
+        "typescript": "^5.1.0",
+        "webpack": "^5.104.1",
+        "webpack-cli": "^5.1.4"
     }
 }
