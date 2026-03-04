@@ -8,7 +8,7 @@ export enum Difficulty {
     HARD = '困难'
 }
 
-export type QuestionType = 'choice' | 'fill';
+export type QuestionType = 'choice' | 'fill' | 'order';
 
 export enum Language {
     PYTHON = 'Python',
@@ -28,6 +28,9 @@ export interface Level {
     options?: string[];
     template?: string;
     placeholders?: string[];
+    // For 'order' type
+    shuffledLines?: string[];
+    correctOrder?: number[]; // indices of shuffledLines in correct order, or just check string equality
     difficulty: Difficulty;
     points: number;
     isBoss?: boolean;
@@ -37,6 +40,9 @@ export interface LanguageProgress {
     completedLevels: number[];
     unlockedLevelId: number;
     score: number;
+    currentStreak: number;
+    lastLoginDate: string; // ISO date string YYYY-MM-DD
+    xp: number;
 }
 
 export interface GameState {

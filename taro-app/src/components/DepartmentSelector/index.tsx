@@ -71,7 +71,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({ onSelect, progr
                         // 原 React 代码：<div onClick> → 已适配 Taro/小程序（<View onClick>）
                         <View
                             key={dept.lang}
-                            onClick={() => onSelect(dept.lang)}
                             className={`dept-card ${dept.colorClass}`}
                         >
                             <View className="dept-header">
@@ -105,7 +104,10 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({ onSelect, progr
 
                             <View className="dept-footer">
                                 {/* 原 React 代码：<button> → 已适配 Taro/小程序（<View>） */}
-                                <View className={`dept-btn ${dept.colorClass}-btn`}>
+                                <View
+                                    className={`dept-btn ${dept.colorClass}-btn`}
+                                    onClick={() => onSelect(dept.lang)}
+                                >
                                     <Text>{hasStarted ? '继续冒险' : '开始冒险'}</Text>
                                 </View>
                             </View>

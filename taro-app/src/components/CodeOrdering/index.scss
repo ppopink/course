@@ -1,0 +1,85 @@
+.code-ordering-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 32rpx;
+}
+
+.area-label {
+    font-size: 24rpx;
+    color: #64748b;
+    margin-bottom: 16rpx;
+    display: block;
+    font-weight: bold;
+}
+
+.code-area {
+    min-height: 200rpx;
+    background: rgba(15, 23, 42, 0.3);
+    border: 2px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 16px;
+    padding: 24rpx;
+    transition: all 0.3s;
+
+    &:has(.selected) {
+        border-style: solid;
+        border-color: rgba(148, 163, 184, 0.5);
+        background: rgba(15, 23, 42, 0.5);
+    }
+}
+
+.placeholder-text {
+    height: 150rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    font-size: 28rpx;
+}
+
+.source-area {
+    padding: 0 8rpx;
+}
+
+.blocks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+}
+
+.code-block {
+    background: #1e293b;
+    padding: 24rpx 32rpx;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4rpx 0 #0f172a;
+
+    &:active {
+        transform: translateY(4rpx);
+        box-shadow: none;
+    }
+
+    &.selected {
+        background: #3b82f6;
+        border-color: #2563eb;
+        box-shadow: 0 4rpx 0 #1d4ed8;
+
+        .code-text {
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        &:active {
+            box-shadow: none;
+        }
+    }
+
+    &.available {
+        .code-text {
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    }
+}

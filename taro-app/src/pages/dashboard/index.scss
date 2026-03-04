@@ -1,194 +1,378 @@
-// src/pages/dashboard/index.scss - 闯关树页面样式
+// src/pages/dashboard/index.scss — 游戏化编程闯关界面
 
+// ======== 全局容器 ========
 .dashboard-container {
-    min-height: 100vh;
+    height: 100vh;
     background: #0f1016;
-    padding-bottom: 160rpx;
+    // 稀疏星空
+    background-image:
+        radial-gradient(1.5px 1.5px at 18px 28px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 75px 90px, rgba(255, 255, 255, 0.35), transparent),
+        radial-gradient(1.5px 1.5px at 140px 45px, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 55px 155px, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1.5px 1.5px at 170px 115px, rgba(255, 255, 255, 0.45), transparent),
+        radial-gradient(1px 1px at 100px 180px, rgba(255, 255, 255, 0.25), transparent);
+    background-size: 200px 200px;
+    position: relative;
+    overflow: hidden;
 }
 
 .dashboard-loading {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    background: #0f1016;
 }
 
-.dashboard-header {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 32rpx 48rpx;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20rpx);
-    border-radius: 24px;
-    margin-bottom: 48rpx;
-}
-
-.back-btn {
-    display: flex;
-    align-items: center;
-    gap: 16rpx;
-    color: #64748b;
+.loading-text {
+    font-size: 32rpx;
     font-weight: bold;
-    font-size: 28rpx;
-
-    &:active {
-        color: #94a3b8;
-    }
+    color: white;
+    opacity: 0.8;
 }
 
-.back-arrow {
-    font-size: 32rpx;
+.map-scroll-view {
+    height: 100vh;
 }
 
-.dashboard-title {
-    font-weight: 900;
-    color: #f8fafc;
-    font-size: 32rpx;
-}
-
-.level-list {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0 48rpx;
-    height: calc(100vh - 200rpx);
-}
-
-.chapter-header {
-    width: 100%;
-    margin: 128rpx 0 64rpx;
-    text-align: center;
-}
-
-.chapter-title {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 48rpx;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 4rpx 20rpx rgba(168, 85, 247, 0.8);
-    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent);
-    padding: 20rpx 0;
-    border-top: 1px solid rgba(168, 85, 247, 0.3);
-    border-bottom: 1px solid rgba(168, 85, 247, 0.3);
-    display: block;
-}
-
-.level-item {
-    display: flex;
-    align-items: center;
-    padding: 32rpx;
-    margin-bottom: 32rpx;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10rpx);
-    border-radius: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+.path-canvas {
     position: relative;
-    transition: all 0.3s;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 100rpx;
+    padding-bottom: 50rpx;
+    overflow: hidden;
+}
 
-    &.locked {
-        opacity: 0.5;
+// ======== 荧光绿浮动代码术语 ========
+.code-term {
+    position: absolute;
+    bottom: -60rpx;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    color: #58cc02;
+    text-shadow: 0 0 8rpx rgba(88, 204, 2, 0.4);
+    pointer-events: none;
+    z-index: 3;
+    animation: term-float 14s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes term-float {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
     }
 
-    &.unlocked {
-        border-color: rgba(168, 85, 247, 0.5);
-        background: rgba(168, 85, 247, 0.1);
-
-        &:active {
-            transform: scale(0.98);
-        }
+    4% {
+        opacity: 0.7;
     }
 
-    &.completed {
-        border-color: rgba(251, 191, 36, 0.5);
-        background: rgba(251, 191, 36, 0.1);
+    25% {
+        transform: translateY(-800rpx) translateX(15rpx) rotate(5deg);
+    }
 
-        &:active {
-            transform: scale(0.98);
-        }
+    50% {
+        transform: translateY(-1600rpx) translateX(-10rpx) rotate(-3deg);
+    }
+
+    75% {
+        transform: translateY(-2400rpx) translateX(8rpx) rotate(2deg);
+    }
+
+    92% {
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translateY(-3200rpx) translateX(-5rpx) rotate(-1deg);
+        opacity: 0;
     }
 }
 
-.level-node {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
+// ======== 节点行 ========
+.node-row {
+    position: relative;
+    height: 260rpx;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.node-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-right: 32rpx;
-    flex-shrink: 0;
-    background: linear-gradient(135deg, #a855f7, #3b82f6);
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
-
-    &.boss {
-        transform: scale(1.2);
-    }
-
-    .locked & {
-        background: rgba(15, 23, 42, 0.8);
-        border-color: rgba(148, 163, 184, 0.3);
-        box-shadow: none;
-    }
-
-    .completed & {
-        background: linear-gradient(135deg, #ffd700, #f59e0b);
-        border-color: #fffbeb;
-    }
 }
 
-.level-number {
-    font-size: 48rpx;
+// ======== 激活节点 ========
+.node-active-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.node-active {
+    width: 150rpx;
+    height: 150rpx;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.85), rgba(59, 130, 246, 0.85));
+    border: 5rpx solid rgba(255, 255, 255, 0.8);
+    box-shadow:
+        0 0 30rpx rgba(139, 92, 246, 0.5),
+        0 0 60rpx rgba(139, 92, 246, 0.15),
+        inset 0 0 14rpx rgba(255, 255, 255, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 60rpx;
     font-weight: 900;
     color: white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 10;
 }
 
-.level-info {
-    flex: 1;
-}
-
-.level-topic {
-    font-size: 20rpx;
-    text-transform: uppercase;
-    letter-spacing: 4rpx;
-    color: #93c5fd;
-    margin-bottom: 8rpx;
-    display: block;
-}
-
-.level-title {
-    font-weight: bold;
-    font-size: 28rpx;
-    color: white;
-    display: block;
-}
-
-.level-badge {
+// 涟漪同心圆
+.ring {
     position: absolute;
-    top: -16rpx;
-    right: 32rpx;
+    border-radius: 50%;
+    border: 2rpx solid rgba(139, 92, 246, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.ring-1 {
+    width: 200rpx;
+    height: 200rpx;
+    animation: ripple 3s infinite linear;
+}
+
+.ring-2 {
+    width: 250rpx;
+    height: 250rpx;
+    border-color: rgba(139, 92, 246, 0.1);
+    animation: ripple 3s infinite linear 1.5s;
+}
+
+@keyframes ripple {
+    0% {
+        width: 150rpx;
+        height: 150rpx;
+        opacity: 0.7;
+    }
+
+    100% {
+        width: 300rpx;
+        height: 300rpx;
+        opacity: 0;
+    }
+}
+
+// 高光点
+.highlight-dot {
+    position: absolute;
+    top: 36rpx;
+    right: 36rpx;
+    width: 12rpx;
+    height: 12rpx;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 0 8rpx white;
+    pointer-events: none;
+}
+
+// 白色闪烁星（呼吸灯）
+.star-sparkle {
+    position: absolute;
+    top: -14rpx;
+    right: -14rpx;
+    font-size: 44rpx;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow:
+        0 0 10rpx rgba(255, 255, 255, 0.9),
+        0 0 24rpx rgba(139, 92, 246, 0.5);
+    animation: breathe 1.8s ease-in-out infinite alternate;
+    z-index: 15;
+    pointer-events: none;
+}
+
+@keyframes breathe {
+    0% {
+        transform: scale(0.6) rotate(0deg);
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.1) rotate(12deg);
+        opacity: 0.6;
+    }
+}
+
+// START 胶囊按钮（跳动）
+.start-btn {
+    position: absolute;
+    bottom: -22rpx;
+    left: 50%;
     background: #3b82f6;
     color: white;
-    padding: 8rpx 24rpx;
-    border-radius: 20rpx;
     font-size: 20rpx;
-    font-weight: bold;
-    box-shadow: 0 4rpx 8rpx rgba(59, 130, 246, 0.5);
-    animation: bounce 2s infinite;
+    font-weight: 900;
+    padding: 6rpx 28rpx;
+    border-radius: 24px;
+    border: 3rpx solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 5rpx 14rpx rgba(0, 0, 0, 0.35);
+    letter-spacing: 2rpx;
+    z-index: 20;
+    text-transform: uppercase;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.start-btn:active {
+    animation: none;
+    transform: translateX(-50%) scale(0.9);
 }
 
 @keyframes bounce {
 
     0%,
     100% {
-        transform: translateY(0);
+        transform: translateX(-50%) translateY(0);
     }
 
     50% {
-        transform: translateY(-10rpx);
+        transform: translateX(-50%) translateY(-8rpx);
     }
+}
+
+// ======== 已完成节点 ========
+.node-done {
+    width: 96rpx;
+    height: 96rpx;
+    border-radius: 50%;
+    font-size: 40rpx;
+    background: radial-gradient(circle at 35% 35%, #fbbf24, #d97706);
+    border: 4rpx solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 14rpx rgba(251, 191, 36, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 900;
+}
+
+// ======== 锁定节点 ========
+.node-locked {
+    width: 88rpx;
+    height: 88rpx;
+    border-radius: 50%;
+    background: rgba(15, 16, 22, 0.85);
+    border: 3rpx dashed rgba(148, 163, 184, 0.35);
+    box-shadow: inset 0 0 14rpx rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32rpx;
+    color: #64748b;
+}
+
+// ======== 玻璃拟态标签卡片 ========
+.glass-label {
+    position: absolute;
+    // 玻璃拟态核心
+    background: rgba(30, 41, 59, 0.55);
+    border: 1.5rpx solid rgba(255, 255, 255, 0.15);
+    border-radius: 18rpx;
+    padding: 10rpx 20rpx;
+    display: flex;
+    flex-direction: column;
+    max-width: 240rpx;
+    box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.4);
+    z-index: 5;
+    backdrop-filter: blur(12px);
+}
+
+.label-right {
+    left: 100%;
+    margin-left: 20rpx;
+}
+
+.label-left {
+    right: 100%;
+    margin-right: 20rpx;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.glass-label-topic {
+    font-size: 16rpx;
+    color: #93c5fd;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.glass-label-title {
+    font-size: 22rpx;
+    color: white;
+    font-weight: bold;
+    margin-top: 4rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// ======== 章节标题（紫色发光横线） ========
+.chapter-header {
+    position: absolute;
+    bottom: 220rpx;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 50;
+    gap: 16rpx;
+}
+
+.chapter-glow-line {
+    width: 100%;
+    max-width: 450rpx;
+    height: 2rpx;
+    background: linear-gradient(90deg,
+            rgba(168, 85, 247, 0) 0%,
+            rgba(168, 85, 247, 0.6) 50%,
+            rgba(168, 85, 247, 0) 100%);
+    box-shadow: 0 0 8rpx rgba(168, 85, 247, 0.4);
+}
+
+.chapter-name {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 4rpx;
+    text-shadow:
+        0 0 16rpx rgba(168, 85, 247, 0.7),
+        0 0 32rpx rgba(168, 85, 247, 0.3);
 }

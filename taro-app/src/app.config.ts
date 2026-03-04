@@ -10,7 +10,7 @@ export default defineAppConfig({
         'pages/profile/index'     // 个人中心
     ],
     tabBar: {
-        custom: false,
+        custom: true,
         color: '#999999',
         selectedColor: '#58cc02',
         backgroundColor: '#3c3c3c',

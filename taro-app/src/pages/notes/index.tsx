@@ -3,12 +3,33 @@
 
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { Language } from '../../types';
 import { LEVELS } from '../../constants';
 import './index.scss';
 
+// 同步 tab bar 选中状态
+const syncTabBar = (index: number) => {
+    // 1. 触发全局事件供 CustomTabBar 组件的小程序端监听更新 React 状态
+    Taro.eventCenter.trigger('updateTabBar', index);
+
+    // 2. 兼容部分原生混合环境兜底
+    const page = Taro.getCurrentInstance().page as any;
+    const tabBar = page?.getTabBar?.();
+    if (tabBar) {
+        if (typeof tabBar.setSelected === 'function') {
+            tabBar.setSelected(index);
+        } else if (typeof tabBar.setData === 'function') {
+            tabBar.setData({ selected: index });
+        }
+    }
+};
+
 const Notes = () => {
+    // 同步 tab bar 选中状态 - 笔记页索引为 2
+    useDidShow(() => {
+        syncTabBar(2);
+    });
     const [currentLang, setCurrentLang] = useState<Language | null>(null);
     const [completedLevels, setCompletedLevels] = useState<number[]>([]);
 

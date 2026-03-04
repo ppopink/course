@@ -1,29 +1,40 @@
 // src/components/DepartmentSelector/index.scss - 语言选择样式
 
 .dept-container {
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
-    padding: 64rpx 48rpx 320rpx;
+    padding: 64rpx 48rpx 320rpx; // 左右统一 48rpx 内边距
     display: flex;
     flex-direction: column;
     gap: 80rpx;
+    box-sizing: border-box;
 }
 
 // 英雄卡片
 .hero-card {
     position: relative;
-    width: 100%;
-    border-radius: 40px;
+    width: 100%; // 恢复 100%
+    border-radius: 80px;
     padding: 2px;
     background: linear-gradient(135deg, #6366f1, #a855f7, #3b82f6);
     box-shadow: 0 0 80rpx rgba(79, 70, 229, 0.3);
+    transition: all 0.3s ease;
+    transform: scale(1); // 默认状态
+
+    &:hover,
+    &:active {
+        transform: scale(1.02); // 悬停/触摸时放大
+        box-shadow: 0 0 100rpx rgba(79, 70, 229, 0.5); // 光晕增强
+
+        .hero-rocket {
+            transform: rotate(0deg) translateY(-10rpx); // 火箭向右倾斜并上移
+        }
+    }
 }
 
 .hero-bg {
     background: rgba(15, 22, 35, 0.9);
     backdrop-filter: blur(20px);
-    border-radius: 38px;
+    border-radius: 78px;
     padding: 64rpx;
     position: relative;
     overflow: hidden;
@@ -92,12 +103,13 @@
 
 .hero-rocket {
     position: absolute;
-    right: 16rpx;
+    right: 48rpx; // 左移
     bottom: 8rpx;
     font-size: 192rpx;
     filter: drop-shadow(0 20rpx 40rpx rgba(0, 0, 0, 0.5));
     transform: rotate(-12deg);
     z-index: 5;
+    transition: transform 0.3s ease; // 平滑过渡动画
 }
 
 .hero-star-1,
@@ -138,18 +150,53 @@
     display: flex;
     flex-direction: column;
     gap: 80rpx;
+    width: 100%; // 恢复 100%
+    perspective: 1000px; // 将透视放到父容器上，兼容微信小程序 WXSS 编译器
 }
 
 .dept-card {
     background: white;
-    border: 2px solid #f1f5f9;
-    border-radius: 40px;
+    border: 4rpx solid;
+    border-radius: 80px;
     padding: 64rpx;
-    transition: all 0.3s;
-    box-shadow: 0 20rpx 0 #f1f5f9;
+    // 使用更丝滑的渐变曲线 (easeInOutQuart)
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(0) scale(1);
 
+    // 外面课程卡片稍稍放大但不倾斜
+    &:hover {
+        transform: translateY(-8rpx) scale(1.02);
+        box-shadow: 0 32rpx 0 currentColor;
+
+        .dept-icon {
+            // 里面的课程头像保留稍微放大且向右倾斜的动态
+            transform: rotate(12deg) scale(1.15);
+        }
+    }
+
+    // 触摸点击时的压缩反馈
     &:active {
-        transform: scale(0.99);
+        transform: scale(0.98);
+        box-shadow: 0 10rpx 0 currentColor;
+        transition: all 0.1s ease;
+    }
+
+    // Python 卡片 - 蓝色
+    &.dept-python {
+        border-color: #1cb0f6;
+        box-shadow: 0 20rpx 0 #1cb0f6;
+    }
+
+    // C 卡片 - 绿色
+    &.dept-c {
+        border-color: #58cc02;
+        box-shadow: 0 20rpx 0 #58cc02;
+    }
+
+    // Java 卡片 - 红色
+    &.dept-java {
+        border-color: #ff4b4b;
+        box-shadow: 0 20rpx 0 #ff4b4b;
     }
 }
 
@@ -163,12 +210,13 @@
 .dept-icon {
     width: 192rpx;
     height: 192rpx;
-    border-radius: 28px;
+    border-radius: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 112rpx;
     box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease; // 平滑过渡动画
 }
 
 .dept-python-bg {
@@ -284,32 +332,34 @@
 }
 
 .dept-btn {
-    padding: 32rpx 80rpx;
+    padding: 24rpx 72rpx;
     font-size: 32rpx;
     color: white;
-    border: 2px solid;
-    border-bottom-width: 8rpx;
-    border-radius: 16px;
+    border: 4rpx solid;
+    border-radius: 28px;
     font-weight: 700;
     transition: all 0.2s;
 
     &:active {
-        transform: translateY(4rpx);
-        border-bottom-width: 4rpx;
+        transform: translateY(8rpx);
+        box-shadow: none;
     }
 }
 
 .dept-python-btn {
     background: #1cb0f6;
-    border-color: #1899d6;
+    box-shadow: 0 20rpx 0 #1899d6;
+    border-color: #1899d6; // 整圈边框
 }
 
 .dept-c-btn {
     background: #58cc02;
-    border-color: #46a302;
+    box-shadow: 0 20rpx 0 #46a302;
+    border-color: #46a302; // 整圈边框
 }
 
 .dept-java-btn {
     background: #ff4b4b;
-    border-color: #d33131;
+    box-shadow: 0 20rpx 0 #d33131;
+    border-color: #d33131; // 整圈边框
 }

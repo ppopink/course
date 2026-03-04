@@ -36,13 +36,34 @@ export const gradeCode = async (level: Level, code: string, lang: Language): Pro
     // 临时模拟实现（仅用于测试）
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const expectedAnswers = level.placeholders || level.options;
-    const isCorrect = expectedAnswers ? code.includes(expectedAnswers[0]) : false;
+    let isCorrect = false;
+
+    if (level.type === 'order') {
+        // For Code Ordering, we check if the code matches the expected sequence
+        // Hardcoded check for the sample level (id: 5)
+        if (level.id === 5) {
+            // The correct code should be:
+            // items = []
+            // items.append('sword')
+            // items.append('shield')
+            // print(items)
+            // Or shield then sword.
+            const correct1 = "items = []\nitems.append('sword')\nitems.append('shield')\nprint(items)";
+            const correct2 = "items = []\nitems.append('shield')\nitems.append('sword')\nprint(items)";
+            isCorrect = code === correct1 || code === correct2;
+        } else {
+            // Default fallback for other order levels
+            isCorrect = true;
+        }
+    } else {
+        const expectedAnswers = level.placeholders || level.options;
+        isCorrect = expectedAnswers ? code.includes(expectedAnswers[0]) : false;
+    }
 
     return {
         success: isCorrect,
         feedback: isCorrect ? '完美契约！代码通过检验' : '实验炸膛！请再试一次',
-        explanation: isCorrect ? '你完全掌握了这个知识点！' : '提示：检查一下填写的内容是否正确',
+        explanation: isCorrect ? '你完全掌握了这个知识点！' : '提示：请检查代码逻辑顺序',
         suggestions: isCorrect ? [] : ['仔细阅读题目要求', '参考教程重新学习']
     };
 };

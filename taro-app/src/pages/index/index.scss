@@ -4,17 +4,39 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: #0f1016;
+    background: transparent; // 透出全局星空背景
+    padding-top: 180rpx; // 为固定顶栏留出空间
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .index-header {
-    max-width: 600px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 48rpx 48rpx 16rpx;
+    position: fixed;
+    top: calc(constant(safe-area-inset-top) + 60rpx);
+    top: calc(env(safe-area-inset-top) + 60rpx);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #0f1016;
+    padding: 0 48rpx;
+    height: 120rpx;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    // 覆盖顶部空隙的背景
+    &::before {
+        content: '';
+        position: absolute;
+        top: calc(-1 * (constant(safe-area-inset-top) + 80rpx));
+        top: calc(-1 * (env(safe-area-inset-top) + 80rpx));
+        left: -10rpx;
+        right: -10rpx;
+        height: calc(constant(safe-area-inset-top) + 100rpx);
+        height: calc(env(safe-area-inset-top) + 100rpx);
+        background: #0f1016;
+        z-index: -1;
+    }
 }
 
 .header-left {

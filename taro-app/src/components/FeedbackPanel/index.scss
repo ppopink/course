@@ -131,6 +131,20 @@
     }
 }
 
+.xp-gain {
+    background: #fef08a;
+    color: #854d0e;
+    padding: 12rpx 32rpx;
+    border-radius: 20px;
+    font-weight: 900;
+    font-size: 32rpx;
+    margin-bottom: 32rpx;
+    border: 4rpx solid #fde047;
+    animation: bounce 1s infinite;
+    display: inline-block;
+    box-shadow: 0 4rpx 0 #facc15;
+}
+
 .feedback-message {
     width: 100%;
     padding: 48rpx 56rpx;

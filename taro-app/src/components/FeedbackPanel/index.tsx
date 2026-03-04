@@ -11,9 +11,10 @@ interface FeedbackPanelProps {
     level: Level;
     onNext: () => void;
     isLastLevel: boolean;
+    xpGain?: number;
 }
 
-const FeedbackPanel: React.FC<FeedbackPanelProps> = ({ result, level, onNext, isLastLevel }) => {
+const FeedbackPanel: React.FC<FeedbackPanelProps> = ({ result, level, onNext, isLastLevel, xpGain }) => {
     const { success, feedback, explanation } = result;
 
     // 原 React 代码：粒子特效数据 → 保持不变（CSS 动画实现）
@@ -48,6 +49,13 @@ const FeedbackPanel: React.FC<FeedbackPanelProps> = ({ result, level, onNext, is
                     <Text className={`feedback-title ${success ? 'success-title' : 'error-title'}`}>
                         {success ? '完美契约！' : '实验炸膛！'}
                     </Text>
+
+                    {/* XP Bonus Display */}
+                    {success && xpGain && (
+                        <View className="xp-gain">
+                            <Text>+ {xpGain} XP</Text>
+                        </View>
+                    )}
 
                     {/* 原 React 代码：<div className="..."> → 已适配 Taro/小程序（<View>） */}
                     <View className={`feedback-message ${success ? 'success-msg' : 'error-msg'}`}>

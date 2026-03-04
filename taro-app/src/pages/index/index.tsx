@@ -1,74 +1,94 @@
 // src/pages/index/index.tsx - 首页（语言选择）
 // 原 React 代码：App.tsx (view='home') → 已适配 Taro/小程序
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { Language, LanguageProgress } from '../../types';
 import { LEVELS } from '../../constants';
 import DepartmentSelector from '../../components/DepartmentSelector';
 import './index.scss';
 
+// 同步 tab bar 选中状态
+const syncTabBar = (index: number) => {
+    // 1. 触发全局事件供 CustomTabBar 组件的小程序端监听更新 React 状态
+    Taro.eventCenter.trigger('updateTabBar', index);
+
+    // 2. 兼容部分原生混合环境兜底
+    const page = Taro.getCurrentInstance().page as any;
+    const tabBar = page?.getTabBar?.();
+    if (tabBar) {
+        if (typeof tabBar.setSelected === 'function') {
+            tabBar.setSelected(index);
+        } else if (typeof tabBar.setData === 'function') {
+            tabBar.setData({ selected: index });
+        }
+    }
+};
+
 // 原 React 代码：const initialProgress → 保持不变
 const initialProgress: LanguageProgress = {
     completedLevels: [],
     unlockedLevelId: 1,
-    score: 0
+    score: 0,
+    currentStreak: 0,
+    lastLoginDate: '',
+    xp: 0
 };
 
 const Index = () => {
-    // 原 React 代码：localStorage.getItem → 已适配 Taro/小程序（Taro.getStorageSync）
+    // 安全解析 Storage（兼容 string 和 object 两种格式）
+    const parseStorage = (raw: any) => {
+        if (!raw) return null;
+        if (typeof raw === 'object') return raw;
+        try { return JSON.parse(raw); } catch { return null; }
+    };
+
+    const defaultState = {
+        currentLanguage: null,
+        progress: {
+            [Language.PYTHON]: { ...initialProgress },
+            [Language.C]: { ...initialProgress },
+            [Language.JAVA]: { ...initialProgress }
+        }
+    };
+
     const [gameState, setGameState] = useState(() => {
-        try {
-            const saved = Taro.getStorageSync('python-quest-tree-v4');
-            return saved ? JSON.parse(saved) : {
-                currentLanguage: null,
-                progress: {
-                    [Language.PYTHON]: { ...initialProgress },
-                    [Language.C]: { ...initialProgress },
-                    [Language.JAVA]: { ...initialProgress }
-                }
-            };
-        } catch (e) {
-            return {
-                currentLanguage: null,
-                progress: {
-                    [Language.PYTHON]: { ...initialProgress },
-                    [Language.C]: { ...initialProgress },
-                    [Language.JAVA]: { ...initialProgress }
-                }
-            };
+        const saved = Taro.getStorageSync('python-quest-tree-v4');
+        return parseStorage(saved) || defaultState;
+    });
+
+    useDidShow(() => {
+        syncTabBar(0);
+        const saved = Taro.getStorageSync('python-quest-tree-v4');
+        const parsed = parseStorage(saved);
+        if (parsed) {
+            setGameState(parsed);
         }
     });
 
-    // 原 React 代码：useEffect(() => { localStorage.setItem(...) }) → 已适配 Taro/小程序（Taro.setStorageSync）
-    useEffect(() => {
-        try {
-            Taro.setStorageSync('python-quest-tree-v4', JSON.parse(JSON.stringify(gameState)));
-        } catch (e) {
-            console.error('存储失败:', e);
-        }
-    }, [gameState]);
+    // 注意：不再通过 useEffect 自动保存 gameState 到 Storage
+    // 所有的存储操作都在 handleLanguageSelect 中显式执行，避免格式不一致和竞态条件
 
     // 原 React 代码：setView('dashboard') → 已适配 Taro/小程序（Taro.navigateTo）
     const handleLanguageSelect = (lang: Language) => {
-        setGameState(prev => {
-            const newState = { ...prev, currentLanguage: lang };
-            const langProg = newState.progress[lang];
-            const currentLevelId = langProg.completedLevels.length > 0
-                ? Math.min(langProg.unlockedLevelId, LEVELS[lang].length)
-                : 1;
+        // 先基于当前状态计算新状态
+        const newState = { ...gameState, currentLanguage: lang };
+        const langProg = newState.progress[lang];
+        const currentLevelId = langProg.completedLevels.length > 0
+            ? Math.min(langProg.unlockedLevelId, LEVELS[lang].length)
+            : 1;
 
-            // 原 React 代码：存储到 state 后跳转 → 已适配 Taro/小程序（先存储再跳转）
-            Taro.setStorageSync('python-quest-tree-v4', JSON.stringify({ ...newState }));
-            Taro.setStorageSync('currentLanguage', lang);
-            Taro.setStorageSync('currentLevelId', currentLevelId);
+        // 更新 React state
+        setGameState(newState);
 
-            // 原 React 代码：setView('dashboard') → 已适配 Taro/小程序（navigateTo）
-            Taro.navigateTo({ url: '/pages/dashboard/index' });
+        // 存储到 Storage - 始终存储为 JSON 字符串
+        Taro.setStorageSync('python-quest-tree-v4', JSON.stringify(newState));
+        Taro.setStorageSync('currentLanguage', lang);
+        Taro.setStorageSync('currentLevelId', currentLevelId);
 
-            return newState;
-        });
+        // dashboard 是 tabBar 页面，必须使用 switchTab 跳转！
+        Taro.switchTab({ url: '/pages/dashboard/index' });
     };
 
     const totalScore = (Object.values(gameState.progress) as LanguageProgress[]).reduce((acc, curr) => acc + curr.score, 0);
